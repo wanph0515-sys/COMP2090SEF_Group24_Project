@@ -26,7 +26,6 @@ class Graph:
             if current not in seen:
                 seen.add(current)
                 path.append(current)
-                # Traverse all adjacent nodes
                 for neighbor in self.nodes[current]:
                     _dfs(neighbor)
         
@@ -75,3 +74,135 @@ def heap_sort(data, key=None):
     
     return arr
 
+def test_graph_interactive():
+    print("\n" + "-" * 40)
+    print("Graph Testing")
+    print("-" * 40)
+    
+    graph = Graph()
+    edges_added = False
+    
+    print("Build your graph (enter 'stop' when done)")
+    print("Example: A B  (creates edge between A and B)")
+    
+    while True:
+        user_input = input("Add edge: ").strip()
+        if user_input.lower() in ['stop', 'done', 'exit', '']:
+            break
+            
+        parts = user_input.split()
+        if len(parts) < 2:
+            print("Need two nodes. Example: A B")
+            continue
+            
+        node1, node2 = parts[0], parts[1]
+        graph.connect(node1, node2)
+        edges_added = True
+        print(f"Linked {node1} with {node2}")
+    
+    if not edges_added:
+        print("No edges added. Using default graph...")
+        graph.connect('A', 'B')
+        graph.connect('A', 'C')
+        graph.connect('B', 'D')
+        print("Default graph created")
+
+    print("\nYour graph:")
+    graph.show()
+    
+    if graph.nodes:
+        start = input("\nStart DFS from which node? ").strip()
+        if start in graph.nodes:
+            result = graph.dfs(start)
+            print(f"DFS from {start}: {result}")
+        else:
+            print(f"Node '{start}' not found. Available nodes: {list(graph.nodes.keys())}")
+            
+        check_node = input("Check neighbors for which node? ").strip()
+        if check_node in graph.nodes:
+            neighbors = graph.get_adjacent(check_node)
+            print(f"Neighbors of {check_node}: {neighbors}")
+
+def test_heap_sort_interactive():
+    print("\n" + "-" * 40)
+    print("Sort Testing")
+    print("-" * 40)
+    print("\n1. Sort numbers")
+    numbers_input = input("Numbers to sort (space separated): ").strip()
+    
+    if numbers_input:
+        try:
+            numbers = [int(x) for x in numbers_input.split()]
+            print(f"Before: {numbers}")
+            sorted_nums = heap_sort(numbers)
+            print(f"After:  {sorted_nums}")
+        except:
+            print("Invalid numbers. Example: 5 2 9 1")
+    else:
+        default_nums = [5, 2, 9, 1, 6]
+        print(f"Using example: {default_nums}")
+        sorted_default = heap_sort(default_nums)
+        print(f"Sorted: {sorted_default}")
+    
+    print("\n2. Sort student grades")
+    students = []
+    print("Add students (name score), 'stop' to finish")
+    print("Example: Alice 85")
+    
+    while True:
+        entry = input("Student: ").strip()
+        if entry.lower() in ['stop', 'done', '']:
+            break
+            
+        parts = entry.split()
+        if len(parts) >= 2:
+            try:
+                name = parts[0]
+                score = int(parts[1])
+                students.append({'name': name, 'grade': score})
+                print(f"Added {name}: {score}")
+            except:
+                print("Invalid score. Use: Name Number")
+        else:
+            print("Need name and score")
+    
+    if students:
+        print("\nStudents (unsorted):")
+        for s in students:
+            print(f"  {s['name']}: {s['grade']}")
+            
+        sorted_students = heap_sort(students, key='grade')
+        print("\nStudents (by grade):")
+        for s in sorted_students:
+            print(f"  {s['name']}: {s['grade']}")
+    else:
+        print("No students added")
+
+def main():
+    print("Algorithm Tester")
+    print("=" * 30)
+    
+    while True:
+        print("\nOptions:")
+        print("1 - Test Graph")
+        print("2 - Test Sorting") 
+        print("3 - Test Both")
+        print("0 - Quit")
+        
+        choice = input("Choose: ").strip()
+        
+        if choice == '1':
+            test_graph_interactive()
+        elif choice == '2':
+            test_heap_sort_interactive()
+        elif choice == '3':
+            test_graph_interactive()
+            test_heap_sort_interactive()
+        elif choice in ['0', 'q', 'quit']:
+            print("Bye!")
+            break
+        else:
+            print("Choose 1, 2, 3, or 0")
+
+if __name__ == "__main__":
+    main()
